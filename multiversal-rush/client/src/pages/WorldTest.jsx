@@ -48,6 +48,20 @@ export default function WorldTest() {
             <Canvas
                 camera={{ position: [0, 5, 10], fov: 70 }}
                 style={{ position: "absolute", inset: 0, zIndex: 1 }}
+                onCreated={({ gl }) => {
+                    // WebGL Context Loss Recovery
+                    const canvas = gl.domElement;
+                    
+                    canvas.addEventListener('webglcontextlost', (event) => {
+                        console.warn('[WebGL] Context lost in WorldTest, preventing default...');
+                        event.preventDefault();
+                    });
+                    
+                    canvas.addEventListener('webglcontextrestored', () => {
+                        console.log('[WebGL] Context restored in WorldTest, reloading...');
+                        window.location.reload();
+                    });
+                }}
             >
                 <React.Suspense fallback={null}>
                     {id === 1 && (
