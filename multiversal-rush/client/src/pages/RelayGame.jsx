@@ -602,6 +602,20 @@ export default function RelayGame() {
                 key={currentMapId}
                 camera={{ position: [0, 6, 12], fov: 70 }}
                 style={{ position: "absolute", inset: 0 }}
+                onCreated={({ gl }) => {
+                    // WebGL Context Loss Recovery
+                    const canvas = gl.domElement;
+                    
+                    canvas.addEventListener('webglcontextlost', (event) => {
+                        console.warn('[WebGL] Context lost in RelayGame, preventing default...');
+                        event.preventDefault();
+                    });
+                    
+                    canvas.addEventListener('webglcontextrestored', () => {
+                        console.log('[WebGL] Context restored in RelayGame, reloading...');
+                        window.location.reload();
+                    });
+                }}
             >
                 {renderMapScene()}
             </Canvas>
