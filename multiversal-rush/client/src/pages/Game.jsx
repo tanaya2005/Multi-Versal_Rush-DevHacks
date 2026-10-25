@@ -254,10 +254,27 @@ export default function Game() {
                     antialias: true, 
                     alpha: false,
                     powerPreference: "high-performance",
-                    failIfMajorPerformanceCaveat: false
+                    failIfMajorPerformanceCaveat: false,
+                    preserveDrawingBuffer: false, // Better performance
+                    stencil: false, // Disable if not needed
+                    depth: true
                 }}
                 onCreated={({ gl }) => {
                     gl.setClearColor('#87CEEB');
+                    
+                    // WebGL Context Loss Recovery
+                    const canvas = gl.domElement;
+                    
+                    canvas.addEventListener('webglcontextlost', (event) => {
+                        console.warn('[WebGL] Context lost, preventing default...');
+                        event.preventDefault();
+                    });
+                    
+                    canvas.addEventListener('webglcontextrestored', () => {
+                        console.log('[WebGL] Context restored, reloading...');
+                        window.location.reload(); // Force reload to restore everything
+                    });
+                }}
                 }}
             >
                 <RemotePlayers />
